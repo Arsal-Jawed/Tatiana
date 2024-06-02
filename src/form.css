@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: url('assets/pic1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.form_container {
+    width: 50vw;
+    margin: 5vh auto;
+    margin-bottom: 6vh;
+    padding: 2vw;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.6vw;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.heading {
+    font-size: 2.8vw;
+    margin-bottom: 2vh;
+    color: white;
+}
+.line {
+    background-color: rgb(255, 255, 255);
+    height: 0.02vw;
+    width: 100%;
+    margin-bottom: 5vh;
+    display: block;
+}
+
+.field {
+    border: 0.06vw solid rgb(146, 146, 146);
+    border-radius: 0.6vw;
+    font-size: 1.2vw;
+    color: rgb(65, 65, 65);
+    outline: none;
+    margin-bottom: 3vh;
+    padding: 0.5vw;
+    width: 20vw;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.753);
+    transition: box-shadow 0.3s ease;
+}
+
+.field:hover,
+.field:focus {
+    box-shadow: 0 0 0.5vw white;
+    border: 1px solid white;
+    
+}
+#context{
+    width: 100%;
+    height: 12vh;
+}
+#context::-webkit-scrollbar {
+    width: 0.6vw;
+}
+
+#context::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#context::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 1vw;
+}
+#context::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+#notes{
+    width: 100%;
+    height: max-content;
+    height: 12vh;
+}
+#notes::-webkit-scrollbar {
+    width: 0.6vw;
+}
+
+#notes::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#notes::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 1vw;
+}
+#notes::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+
+.file-input {
+    display: none;
+}
+.label{
+    color:#ffffff;
+    display: block;
+    margin-bottom: 1vh;
+    font-weight: 500;
+}
+.file-label {
+    display: inline-block;
+    padding: 0.5vw 1vw;
+    border: 0.06vw solid rgb(146, 146, 146);
+    border-radius: 0.6vw;
+    font-size: 1.2vw;
+    color: rgb(102, 102, 102);
+    background-color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.file-label:hover,
+.file-label:focus {
+    background-color: rgba(0, 123, 255, 0.1);
+    box-shadow: 0 0 0.5vw rgba(0, 123, 255, 0.5);
+}
+
+p {
+    font-size: 1.2vw;
+    color: white;
+    margin-bottom: 2vh;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 600px) {
+    .form_container {
+        padding: 4vw;
+    }
+
+    .heading {
+        font-size: 4vw;
+    }
+
+    .field, .file-label {
+        font-size: 4vw;
+    }
+}
+
+.submit{
+    color: white;
+    background-color: rgb(9, 159, 247);
+    border: none;
+    font-size: 1.6vw;
+    font-weight: bold;
+    border-radius: 0.4vw;
+    padding: 1.2vh;
+    width: 16vw;
+    margin-left: 14vw;
+    margin-top: 5vh;
+}
+.submit:hover{
+    background-color: rgb(0, 107, 168);
+}

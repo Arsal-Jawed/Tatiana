@@ -1,0 +1,26 @@
+
+.line2{
+    background-color: rgb(0, 132, 255);
+    height: 0.03vw;
+    width: 30%;
+    margin-bottom: 5vh;
+    display: block;
+    margin-top: 4vh;
+}
+.custom-list li {
+    position: relative;
+    padding-left: 1.5em;
+    list-style: none;
+  }
+
+  .custom-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 0.5em;
+    width: 0.5em;
+    background-color: rgb(0, 132, 255);
+    border-radius: 50%;
+  }
