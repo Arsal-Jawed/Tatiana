@@ -2,6 +2,7 @@ import React from "react";
 import Form from "./Form";
 import Data from "./Data";
 import Product from "./Product";
+import Loading from './Loading';
 import { useState } from "react";
 import { Routes,Route } from "react-router-dom";
 
@@ -107,6 +108,7 @@ function App(){
                   <Route path='/' element={<Form/>}/>
                   <Route path='/data' element={<Data data={profiler}/>}/>
                   <Route path='/product' element={<Product data={prd}/>}/>
+                  <Route path="/loading" element={<Loading/>}/>
                 </Routes>
   </div>);
 }
