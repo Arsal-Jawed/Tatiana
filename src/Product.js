@@ -3,12 +3,16 @@ import Products from './Products';
 import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useLocation } from 'react-router-dom';
 
 
 function Product({data}){
   
   const [logo, setLogo] = useState(data.logo || null);
   const [productImages, setProductImages] = useState(data.ProductsData.map(() => null));
+   
+  const location = useLocation();
+  const RecievedData = location.state || {};
 
     const handleImageChange = (index, event) => {
         if (event.target.files && event.target.files[0]) {
@@ -36,7 +40,11 @@ function Product({data}){
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('Products.pdf');
     });
-}
+} 
+useEffect(() => {
+
+  console.log('Received data:', RecievedData);
+}, [RecievedData]);
 
     return(
         <div>
