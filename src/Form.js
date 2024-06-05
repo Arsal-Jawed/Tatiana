@@ -1,5 +1,6 @@
 import './form.css';
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Loading from './Loading';
 
@@ -35,6 +36,8 @@ function Form() {
     const handleReportChange = (e) => setReport(e.target.files[0]);
     const handleDocument = (e) => setDoc(e.target.files[0]);
 
+    const navigate = useNavigate();
+
     const handleLoadingPage = () => {
         setLoading(true);
         
@@ -51,6 +54,10 @@ function Form() {
                         axios.get(`http://localhost:8000/search/${search_id}`)
                             .then(response => {
                                 data = JSON.parse(response.data.output_data);
+                                
+                                //////////    Transfering Data to Data    ///////////
+                                navigate('/data',{state: data});
+
 
                                 try {if (data.products_and_service[0].OFFERING === 'PRODUCT') {
                                     // redirect to product page

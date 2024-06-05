@@ -1,12 +1,16 @@
 import './data.css';
 import Leader from './Leader';
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useLocation } from 'react-router-dom';
 
 function Data({data}){
   const [logo, setLogo] = useState(data.logo || null); 
   const [images, setImages] = useState(data.leaders.map(() => null));
+
+  const location = useLocation();
+  const RecievedData = location.state || {};
 
   const handleLogoChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -36,6 +40,13 @@ function Data({data}){
   });
     
 };
+
+useEffect(() => {
+
+  console.log('Received data:', receivedData);
+}, [receivedData]);
+
+
     return(
         <div>
             <button className="bg-blue-500 hover:bg-blue-700 text-white ml-[42vw] mt-[3vh] font-bold py-2 px-4 rounded mb-4" onClick={downloadAsPdf}>Download as PDF</button>
