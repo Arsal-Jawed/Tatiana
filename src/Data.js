@@ -43,8 +43,8 @@ function Data({data}){
 
 useEffect(() => {
 
-  console.log('Received data:', receivedData);
-}, [receivedData]);
+  console.log('Received data:', RecievedData);
+}, [RecievedData]);
 
 
     return(
