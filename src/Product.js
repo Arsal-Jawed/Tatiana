@@ -1,6 +1,6 @@
 'use client'
 import Products from './Products';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useLocation } from 'react-router-dom';
@@ -132,6 +132,28 @@ useEffect(() => {
                             />
                         </div>
                     ))}
+                    <div className='mt-[4vh]'>
+                        <h1 className='text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center'>Market Segment for Customer & Partnes</h1>
+                        <div className='flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]'>
+                        <p className='flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center'>Market</p>
+                        <p className='flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]'>
+                            {data.Description}
+                        </p>
+                        </div>
+                        <div className='flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]'>
+                        <p className='flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center'>Cutomer</p>
+                        <p className='flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]'>
+                            {data.MA}
+                        </p>
+                        </div>
+                        <div className='flex flex-row w-[36vw] h-[max-content] mb-[2vh]'>
+                        <p className='flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center'>Partners</p>
+                        <p className='flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]'>
+                            {data.MA}
+                        </p>
+                        </div>
+                        </div>
+                   
                     </div>
                 </div>
         </div>

@@ -89,15 +89,6 @@ function App(){
       {item:'Inserts', discp:'Our inserts provide legendary performance through groundbreaking innovative designs Lockbolts', itemImage:'./tool.png'},
       {item:'Lockbolts', discp:'Our proprietary two-piece lockbolt systems are structural vibration-resistant fasteners with high clamp-loadperformance and multi-grip capabilities Metal Clips', itemImage:'./tool.png'},
       {item:'Metal Clips', discp:'Ergonomic, economic, and efficient, our diverse metal clip portfolio can improve your assembly time and yield costreductions', itemImage:'./tool.png'},
-      {item:'Nuts and Nuts Assemblies', discp:'Find torque nuts to weld nuts to clinch nuts that meet a variety of performance specifications for a wide range of industries', itemImage:'./tool.png'},
-      {item:'Pins', discp:'Our pin capability ranges from cold-form to CNC and auto-lathe for special configurations', itemImage:'./tool.png'},
-      {item:'Plastic Components', discp:'Durable, high-strength plastic fasteners for use in industrial manufacturing and automotive industries', itemImage:'./tool.png'},
-      {item:'Rivet Nuts', discp:'Available in round, hex, and square body styles, our rivet nuts feature a variety of options and locking features', itemImage:'./tool.png'},
-      {item:'Rivets', discp:'Our blind fasteners and breakstem systems build more structurally sound products', itemImage:'./tool.png'},
-      {item:'Screws and Bolts', discp:'Screws and bolts are designed and manufactured to deliver optimum performance, quality, and assembly costs', itemImage:'./tool.png'},
-      {item:'Sealing Fasteners', discp:'Solve a tricky problem like maintaining a liquid-tight seal in high and low-pressure applications with sealing fasteners', itemImage:'./tool.png'},
-      {item:'Self-Piercing Rivets', discp:'Join two or more layers of material without the need for a predrilled hole with a self- piercing rivet', itemImage:'./tool.png'},
-      {item:'Standoffs Spacers and Washers', discp:'Offered in a range of materials to protect against chaffing, shear loads, and galvanic corrosion', itemImage:'./tool.png'},
       {item:'Studs', discp:'Stud fastening options to meet the most demanding application requirements, designed to be installed with equipment to optimize manufacturing efficiency', itemImage:'./tool.png'}
     ]
       
