@@ -23,6 +23,7 @@ body {
 
 .loader-container {
   width: 100%;
+  min-width: 40vw;
   display: flex;
   justify-content: center;
   align-items: center;

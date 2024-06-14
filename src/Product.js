@@ -57,18 +57,28 @@ function Product({ data }) {
   useEffect(() => {
     const asyncResponse = async () => {
       try {
+        const inputs = recievedData?.inputs;
+        const formData = new FormData();
+        formData.append('context', inputs.context);
+        formData.append('company_name', inputs.company_name);
+        formData.append('website', inputs.website);
+        formData.append('linkedin_url', inputs.linkedin_url);
+        formData.append('wikipedia_link', inputs.wikipedia_link);
+        for (let i = 0; i < inputs.files.length; i++) {
+          formData.append('files', inputs.files[i]);
+        }
         console.log('loading apis...');
-        const res = await Promise.all([axios.post(apiUrl+"market_segmentation", recievedData?.inputs, {
+        const res = await Promise.all([axios.post(apiUrl+"market_segmentation", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }),
-        axios.post(apiUrl+"customer_partner", recievedData?.inputs, {
+        axios.post(apiUrl+"customer_partner", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }),
-        axios.post(apiUrl+"financial_overview", recievedData?.inputs, {
+        axios.post(apiUrl+"financial_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -109,9 +119,9 @@ function Product({ data }) {
         <div className="flex flex-row p-[2vh]">
           <div className="w-[65vw]">
             <p className="text-blue-400 text-[2.2vw] font-bold">
-              {recievedData?.companyOverview['Company Owner'] || data.CompanyName}
+              {recievedData?.companyOverview['Company Name'] || 'Not specified'}
             </p>
-            <p className="text-[1.2vw] text-black">{recievedData?.companyOverview['Company Tagline'] || data.CompanyDetail}</p>
+            <p className="text-[1.2vw] text-black">{recievedData?.companyOverview['Company Tagline'] || 'Not specified'}</p>
             <hr className="line2"></hr>
           </div>
           {logo ? (
@@ -121,14 +131,21 @@ function Product({ data }) {
               className="w-[20vw] h-[18vh] ml-[1vw]"
             ></img>
           ) : (
-            <label
-              htmlFor={`upload-button-logo`}
+            // <label
+            //   htmlFor={`upload-button-logo`}
+            //   className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
+            // >
+            //   <span className="text-gray-500 ml-[2vw] text-[1vw]">
+            //     Upload Image
+            //   </span>
+            // </label>
+            <div
               className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
             >
-              <span className="text-gray-500 ml-[2vw] text-[1vw]">
-                Upload Image
+              <span className="text-gray-500 text-center text-[1vw]">
+                No Image
               </span>
-            </label>
+            </div>
           )}
           <input
             type="file"
@@ -144,7 +161,7 @@ function Product({ data }) {
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center">
                 Industrial Segment Overwiew
               </h1>
-              {Object.keys(scrappedData?.marketSegmentation)?.map(key => {
+              {scrappedData?.marketSegmentation && Object.keys(scrappedData?.marketSegmentation)?.map(key => {
                 return (
                   <div className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
                     <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center">
@@ -218,26 +235,48 @@ function Product({ data }) {
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center">
                 Market Segment for Customer & Partnes
               </h1>
-              {Object.keys(scrappedData?.customerPartner)?.map(i => {
-                const firstKey = Object.keys(scrappedData?.customerPartner[i])[0];
-                const firstValue = scrappedData?.customerPartner[i][firstKey];
-                return (<div className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
-                  <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center">
-                    {i}
-                  </p>
-                  <p className="flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]">
-                    {/* {JSON.stringify(scrappedData?.customerPartner[i])} */}
-                    {`${firstKey}: ${firstValue}`}
-                  </p>
-                </div>)
-                })
-              }
+              {/* {Object.keys(scrappedData?.customerPartner)?.map((key, index) => {
+                const value = scrappedData?.customerPartner[key];
+                return (
+                  <div key={index} className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
+                    <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw] justify-center items-center">
+                      {key}
+                    </p>
+                    <div className="flex flex-col justify-center items-center text-black text-[0.9vw] p-[1.2vh] w-[30vw]">
+                      {Object.keys(value)?.map((subKey, subIndex) => (
+                        <p key={subIndex}>{`${subKey}: ${item[subKey]}`}</p>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })} */}
+              {/* if the code contains array of objects */}
+              {Object.keys(scrappedData?.customerPartner)?.map((key, index) => {
+                return (
+                  <div key={index} className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
+                    <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw] justify-center items-center">
+                      {key}
+                    </p>
+                    <div className="flex flex-col justify-center items-center text-black text-[0.9vw] p-[1.2vh] w-[30vw]">
+                      {scrappedData?.customerPartner[key]?.map((item, idx) => {
+                        // console.log('data inside: ', item, scrappedData?.customerPartner[key]);
+                        return (<div key={idx}>
+                          {Object.keys(item).map((subKey, subIndex) => (
+                            <span key={subIndex}>{`${subKey}: ${item[subKey]}`}</span>
+                          ))}
+                        </div>)
+              })}
+                    </div>
+                  </div>
+                );
+              })}
+
             </div>) : <div className="loader-container"><div className="content-loader"></div></div>}
           </div>
         </div>
         {!loading ? (scrappedData?.financialOverview && <div className='boxy'>
           <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-full text-center">
-            Industrial Segment - Summary Financials
+            Industrial Segmentt - Summary Financials
           </h1>
           <div className="overflow-x-auto w-full">
 

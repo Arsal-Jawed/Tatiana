@@ -124,7 +124,7 @@ function Form() {
         segment: segment,
         notes: notes,
         press: press,
-        notesFile: notesFile,
+        files: files,
         // report: report,
         input_text: false,
       }
@@ -148,6 +148,10 @@ function Form() {
       // const formData = new FormData();
       // formData.append("search_request", JSON.stringify(requestBody));
       // formData.append('files', doc);
+
+      const inputs = {
+
+      }
       
       const formData = new FormData();
       formData.append('context', context);
@@ -178,16 +182,16 @@ function Form() {
       ]);
 
       console.log('api res main: ', res);
-      let temp = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json/, '').replace(/```$/, '');
+      let temp = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '\n').replace(/^```json/, '').replace(/```$/, '');
       temp = JSON.parse(temp);
       console.log('response from products api: ', temp, res[0].data);
-      let companyOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+      let companyOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '\n').replace(/^```json/, '').replace(/```$/, '');
       companyOverview = JSON.parse(companyOverview);
-      console.log('response from company_overview api: ', res[1].data);
+      console.log('response from company_overview api: ', companyOverview, res[1].data);
       if(temp['OFFERING'] && (temp['OFFERING'] === 'PRODUCT' || temp['OFFERING'] === 'PRODUCTS' || temp['OFFERING'] === 'LIST OF OFFERINGS' || temp['OFFERING'] === 'OFFERINGS')) {
-        navigate('/product', { state: { companyOverview, products: temp, inputs: formData }});
+        navigate('/product', { state: { companyOverview, products: temp, inputs: data }});
       } else if(temp['OFFERING'] && (temp['OFFERING'] === 'SERVICE' || temp['OFFERING'] === 'SERVICES' || temp['OFFERING'] === 'LIST OF OFFERINGS' || temp['OFFERING'] === 'OFFERINGS')) {
-        navigate('/data', { state: { data: { companyOverview, services: temp, inputs: formData } }});
+        navigate('/data', { state: { data: { companyOverview, services: temp, inputs: data } }});
       }
 
       //  extractors api for test

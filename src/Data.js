@@ -48,7 +48,7 @@ function Data({ data }) {
     console.log("Received data:", recievedData);
     if(recievedData) {
       const data = {
-        name: recievedData?.companyOverview['Company Owner'],
+        name: recievedData?.companyOverview['Company Name'],
         tagline: recievedData?.companyOverview['Company Tagline'],
         description: recievedData?.companyOverview['Description'],
         foundedYear: recievedData?.companyOverview['Founded'],
@@ -69,12 +69,22 @@ function Data({ data }) {
     const asyncResponse = async () => {
       try {
         console.log('loading apis...');
-        const res = await Promise.all([axios.post(apiUrl+"financial_overview", recievedData?.inputs, {
+        const inputs = recievedData?.inputs;
+        const formData = new FormData();
+        formData.append('context', inputs.context);
+        formData.append('company_name', inputs.company_name);
+        formData.append('website', inputs.website);
+        formData.append('linkedin_url', inputs.linkedin_url);
+        formData.append('wikipedia_link', inputs.wikipedia_link);
+        for (let i = 0; i < inputs.files.length; i++) {
+          formData.append('files', inputs.files[i]);
+        }
+        const res = await Promise.all([axios.post(apiUrl+"financial_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }),
-        axios.post(apiUrl+"leadership_overview", recievedData?.inputs, {
+        axios.post(apiUrl+"leadership_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -151,12 +161,12 @@ function Data({ data }) {
         <div className="flex flex-row p-[2vh] w-[50vw]">
           <div>
             <p className="text-blue-400 text-[2.2vw] font-bold w-[65vw]">
-              {scrappedData?.name || data.CompanyName}
+              {scrappedData?.name || 'Not specified'}
             </p>
-            <p className="text-[1.2vw] text-black">{scrappedData?.tagline || data.CompanyDetail}</p>
+            <p className="text-[1.2vw] text-black">{scrappedData?.tagline || 'Not specified'}</p>
             <hr className="line2"></hr>
           </div>
-          <img src={scrappedData?.profileImg || logo} alt="logo" className="w-[20vw] h-[18vh] ml-[1vw]" />
+          {/* <img src={scrappedData?.profileImg || logo} alt="logo" className="w-[20vw] h-[18vh] ml-[1vw]" /> */}
           {/* {logo ? (
             <img src={scrappedData?.profileImg || logo} alt="logo" className="w-[20vw] h-[18vh] ml-[1vw]" />
           ) : (
@@ -169,6 +179,17 @@ function Data({ data }) {
               </span>
             </label>
           )} */}
+          {logo ? (
+            <img src={scrappedData?.profileImg || logo} alt="logo" className="w-[20vw] h-[18vh] ml-[1vw]" />
+          ) : (
+            <div
+              className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
+            >
+              <span className="text-gray-500 text-center text-[1vw]">
+                No Image
+              </span>
+            </div>
+          )}
           <input
             type="file"
             id="upload-button-logo"
@@ -194,7 +215,7 @@ function Data({ data }) {
                   Description
                 </p>
                 <p className="flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]">
-                  {scrappedData?.description || data.Description}
+                  {scrappedData?.description || 'Not specified'}
                 </p>
               </div>
               <div className="flex flex-row h-[8vh]">
@@ -203,7 +224,7 @@ function Data({ data }) {
                     Founded
                   </p>
                   <p className="flex text-[1vw] justify-center items-center w-[5vw] text-black">
-                    {scrappedData?.foundedYear || data.Founded}
+                    {scrappedData?.foundedYear || 'Not specified'}
                   </p>
                 </div>
                 <div className="flex flex-row">
@@ -211,7 +232,7 @@ function Data({ data }) {
                     HQs
                   </p>
                   <p className="flex text-[1vw] justify-center items-center w-[8vw] text-black">
-                    {scrappedData?.headQuaters || data.HQ}
+                    {scrappedData?.headQuaters || 'Not specified'}
                   </p>
                 </div>
                 <div className="flex flex-row">
@@ -219,7 +240,7 @@ function Data({ data }) {
                     Employees
                   </p>
                   <p className="flex text-[1vw] justify-center items-center w-[5vw] text-black">
-                    {scrappedData?.employees || data.Employees}
+                    {scrappedData?.employees || 'Not specified'}
                   </p>
                 </div>
               </div>
