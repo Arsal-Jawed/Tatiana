@@ -94,14 +94,16 @@ function App(){
       
   });
 
-  return(<div>
-                <Routes>
-                  <Route path='/' element={<Form/>}/>
-                  <Route path='/data' element={<Data data={profiler}/>}/>
-                  <Route path='/product' element={<Product data={prd}/>}/>
-                  <Route path="/loading" element={<Loading/>}/>
-                </Routes>
-  </div>);
+  return(
+    <div className="app-wrapper">
+      <Routes>
+        <Route path='/' element={<Form/>}/>
+        <Route path='/data' element={<Data data={profiler}/>}/>
+        <Route path='/product' element={<Product data={prd}/>}/>
+        <Route path="/loading" element={<Loading/>}/>
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

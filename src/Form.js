@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Loading from "./Loading";
+import { apiUrl } from "./apiUrl";
 
 function Form() {
   const [context, setContext] = useState("");
@@ -16,7 +17,7 @@ function Form() {
   const [notes, setNotes] = useState("");
   const [press, setPress] = useState("");
   const [notesFile, setNotesFile] = useState(null);
-  const [report, setReport] = useState(null);
+  const [files, setFiles] = useState([]);
   const [doc, setDoc] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,159 +33,182 @@ function Form() {
   const handleSegment = (e) => setSegment(e.target.value);
   const handleNotes = (e) => setNotes(e.target.value);
   const handlePress = (e) => setPress(e.target.value);
-  const handleFileChange = (e) => setNotesFile(e.target.files[0]);
-  const handleReportChange = (e) => setReport(e.target.files[0]);
-  const handleDocument = (e) => setDoc(e.target.files[0]);
+  // const handleReportChange = (e) => setFiles(e.target.files[0]);
+  // const handleDocument = (e) => setDoc(e.target.files[0]);
+  const handleFileChange = (e) => setFiles(e.target.files);
 
   const navigate = useNavigate();
 
-  const handleLoadingPage = (id) => {
-    setLoading(true);
-    const interval = setInterval(() => {
-      fetch(`http://localhost:8000/search-status/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "completed") {
-            clearInterval(interval);
-            axios
-              .get(`http://localhost:8000/search/${id}`)
-              .then((response) => {
-                const data = JSON.parse(response.data.output_data);
-                debugger
-                try {
-                  if (data.products_and_service[0].OFFERING === "PRODUCT") {
-                    navigate("/product", { state: data });
-                  } else {
-                    navigate("/data", { state: data });
-                  }
-                } catch (error) {
-                  navigate("/data", { state: data });
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+  // const handleLoadingPage = (id) => {
+  //   setLoading(true);
+  //   const interval = setInterval(() => {
+  //     fetch(`http://localhost:8000/search-status/${id}`)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         if (data.status === "completed") {
+  //           clearInterval(interval);
+  //           axios
+  //             .get(`http://localhost:8000/search/${id}`)
+  //             .then((response) => {
+  //               const data = JSON.parse(response.data.output_data);
+  //               debugger
+  //               try {
+  //                 if (data.products_and_service[0].OFFERING === "PRODUCT") {
+  //                   navigate("/product", { state: data });
+  //                 } else {
+  //                   navigate("/data", { state: data });
+  //                 }
+  //               } catch (error) {
+  //                 navigate("/data", { state: data });
+  //               }
+  //             })
+  //             .catch((error) => {
+  //               console.log(error);
+  //             });
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         // Handle error
+  //         console.log(error);
+  //         setLoading(false);
+  //       });
+  //   }, 2000);
+  // };
+
+  const SubmitProfiler = async (e) => {
+    try {
+      e.preventDefault();
+      const websiteRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+      const linkedInRegex = /^(https?):\/\/(www\.)?linkedin\.com\/.*$/;
+      const wikipediaRegex =
+        /^(https?):\/\/(www\.)?en\.wikipedia\.org\/wiki\/.*$/;
+  
+      const isValidURL = (url, regex) => {
+        return regex.test(url);
+      };
+  
+      if (
+              context.trim() === '' ||
+              company.trim() === '' ||
+              website.trim() === '' ||
+              linkdin.trim() === '' ||
+              wikipedia.trim() === ''
+          ) {
+              setError('Please fill in all required fields.');
+              return;
+      } else {
+          setError('');
+      }
+  
+      if(!isValidURL(website.trim(), websiteRegex) ){
+          setError('please enter a valid website link');
+          return;
+      }else{setError('');}
+      if(!isValidURL(linkdin.trim(), linkedInRegex) ){
+          setError('please enter a valid LinkedIn link');
+          return;
+      }else{setError('');}
+      if(!isValidURL(wikipedia.trim(), wikipediaRegex) ){
+          setError('please enter a valid Wikipedia link');
+          return;
+      }else{setError('');}
+  
+      const data = {
+        context: context,
+        company_name: company,
+        website: website,
+        linkedin_url: linkdin,
+        wikipedia_link: wikipedia,
+        owner: owner,
+        ownerWeb: ownerWeb,
+        segment: segment,
+        notes: notes,
+        press: press,
+        notesFile: notesFile,
+        // report: report,
+        input_text: false,
+      }
+  
+      // const requestBody = JSON.stringify({
+      //   context: context,
+      //   company: company,
+      //   website: website,
+      //   linkdin: linkdin,
+      //   wikipedia: wikipedia,
+      //   owner: owner,
+      //   ownerWeb: ownerWeb,
+      //   segment: segment,
+      //   notes: notes,
+      //   press: press,
+      //   notesFile: notesFile,
+      //   report: report,
+      //   input_text: false,
+      // });
+  
+      // const formData = new FormData();
+      // formData.append("search_request", JSON.stringify(requestBody));
+      // formData.append('files', doc);
+      
+      const formData = new FormData();
+      formData.append('context', context);
+      formData.append('company_name', company);
+      formData.append('website', website);
+      formData.append('linkedin_url', linkdin);
+      formData.append('wikipedia_link', wikipedia);
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+  
+      console.log('loading start...');
+      setLoading(true);
+      console.log('data: ', data);
+      console.log('formData: ', formData);
+      console.log('files: ', files);
+
+      const res = await Promise.all([axios.post(apiUrl+"products_and_services", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }),
+        await axios.post(apiUrl+"company_overview", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
         })
-        .catch((error) => {
-          // Handle error
-          console.log(error);
-          setLoading(false);
-        });
-    }, 2000);
-  };
+      ]);
 
-  const SubmitProfiler = (e) => {
-    e.preventDefault();
-    const websiteRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-    const linkedInRegex = /^(https?):\/\/(www\.)?linkedin\.com\/.*$/;
-    const wikipediaRegex =
-      /^(https?):\/\/(www\.)?en\.wikipedia\.org\/wiki\/.*$/;
+      console.log('api res main: ', res);
+      let temp = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json/, '').replace(/```$/, '');
+      temp = JSON.parse(temp);
+      console.log('response from products api: ', temp, res[0].data);
+      let companyOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+      companyOverview = JSON.parse(companyOverview);
+      console.log('response from company_overview api: ', res[1].data);
+      if(temp['OFFERING'] && (temp['OFFERING'] === 'PRODUCT' || temp['OFFERING'] === 'PRODUCTS' || temp['OFFERING'] === 'LIST OF OFFERINGS' || temp['OFFERING'] === 'OFFERINGS')) {
+        navigate('/product', { state: { companyOverview, products: temp, inputs: formData }});
+      } else if(temp['OFFERING'] && (temp['OFFERING'] === 'SERVICE' || temp['OFFERING'] === 'SERVICES' || temp['OFFERING'] === 'LIST OF OFFERINGS' || temp['OFFERING'] === 'OFFERINGS')) {
+        navigate('/data', { state: { data: { companyOverview, services: temp, inputs: formData } }});
+      }
 
-    const isValidURL = (url, regex) => {
-      return regex.test(url);
-    };
-
-    if (
-            context.trim() === '' ||
-            company.trim() === '' ||
-            website.trim() === '' ||
-            linkdin.trim() === '' ||
-            wikipedia.trim() === ''
-        ) {
-            setError('Please fill in all required fields.');
-            return;
-    } else {
-        setError('');
+      //  extractors api for test
+      // const res = await axios.post(apiUrl+"run-extractors", formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data'
+      //   }
+      // });
+      // console.log('api response direct: ', res.data);
+      // let temp = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json/, '').replace(/```$/, '');
+      // temp = JSON.parse(temp);
+      // console.log('response from extranctors api: ', temp);
+    } catch(e) {
+      setLoading(prev => false);
+      setError(e.message || e);
+      console.log('form api error: ', e.message || e);
     }
-
-    if(!isValidURL(website.trim(), websiteRegex) ){
-        setError('please enter a valid website link');
-        return;
-    }else{setError('');}
-    if(!isValidURL(linkdin.trim(), linkedInRegex) ){
-        setError('please enter a valid LinkedIn link');
-        return;
-    }else{setError('');}
-    if(!isValidURL(wikipedia.trim(), wikipediaRegex) ){
-        setError('please enter a valid Wikipedia link');
-        return;
-    }else{setError('');}
-
-    // const formData = new FormData();
-    // formData.append('context', context);
-    // formData.append('company', company);
-    // formData.append('website', website);
-    // formData.append('linkdin', linkdin);
-    // formData.append('wikipedia', wikipedia);
-    // formData.append('owner', owner);
-    // formData.append('ownerWeb', ownerWeb);
-    // formData.append('segment', segment);
-    // formData.append('notes', notes);
-    // formData.append('press', press);
-    // formData.append('notesFile', notesFile);
-    // formData.append('report', report);
-    // formData.append('doc', doc);
-
-    // const Profiler = {
-    //     context: context,
-    //     company: company,
-    //     website: website,
-    //     linkdin: linkdin,
-    //     wikipedia: wikipedia,
-    //     owner: owner,
-    //     ownerWeb: ownerWeb,
-    //     segment: segment,
-    //     notes: notes,
-    //     press: press,
-    //     notesFile: notesFile,
-    //     report: report,
-    //     doc: doc
-    // };
-
-    const requestBody = JSON.stringify({
-      context: context,
-      company: company,
-      website: website,
-      linkdin: linkdin,
-      wikipedia: wikipedia,
-      owner: owner,
-      ownerWeb: ownerWeb,
-      segment: segment,
-      notes: notes,
-      press: press,
-      notesFile: notesFile,
-      report: report,
-      input_text: false,
-    });
-
-    // curl -X 'POST' \
-    // 'http://localhost:8000/create-search' \
-    // -H 'accept: application/json' \
-    // -H 'Content-Type: multipart/form-data' \
-    // -F 'search_request={"context":"","company":"","website":"","linkdin":"","wikipedia":"","owner":"","ownerWeb":"","segment":"","notes":"","press":"","notesFile":null,"report":null,"input_text":false}' \
-    // -F 'files=@test.docx;type=application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-
-    const formData = new FormData();
-    formData.append("search_request", JSON.stringify(requestBody));
-    formData.append('files', doc);
-
-    axios
-      .post("http://localhost:8000/create-search", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setSearchId(response.data.search_id);
-        handleLoadingPage(response.data.search_id);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
   };
 
-  return !loading ? (
+  return (
+    <>
     <div className="form_container">
       <h2 className="heading">Profiler</h2>
       <div>
@@ -295,7 +319,7 @@ function Form() {
           </div>
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* <div style={{ display: "flex", flexDirection: "column" }}>
         <p className="guide">
           Are there any meeting notes we should consider ? (optional)
         </p>
@@ -330,8 +354,8 @@ function Form() {
           Choose a File
         </label>
         {notesFile && <p>Selected file: {notesFile.name}</p>}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      </div> */}
+      <div style={{ display: "flex", flexDirection: "column", marginBottom: '1.5rem' }}>
         <p className="guide">
           Is there any specific information you would like us to consider ?
           (optional)
@@ -343,14 +367,16 @@ function Form() {
           className="file-input"
           accept=".pdf,.doc,.docx"
           id="NotesUpload"
-          onChange={handleReportChange}
+          onChange={handleFileChange}
+          multiple
         />
         <label htmlFor="NotesUpload" className="file-label">
           Choose a File
         </label>
-        {report && <p>Selected file: {report.name}</p>}
+        {/* {files && <p>Selected file: {files.name}</p>} */}
+        {files?.length > 0 && <p>File(s) selected</p>}
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* <div style={{ display: "flex", flexDirection: "column" }}>
         <p className="guide">
           Do you have any document to consider ? (optional)
         </p>
@@ -367,7 +393,7 @@ function Form() {
           Choose a File
         </label>
         {doc && <p>Selected file: {doc.name}</p>}
-      </div>
+      </div> */}
       <div style={{ display: "flex", flexDirection: "column" }}>
         <p className="guide">
           Would you like to consider press release ? (optional)
@@ -389,8 +415,8 @@ function Form() {
       </button>
       <p style={{ color: "rgb(255, 0, 0)", fontSize: "1.4vw" }}>{error}</p>
     </div>
-  ) : (
-    <Loading />
+    { loading && <Loading /> }
+    </>
   );
 }
 
