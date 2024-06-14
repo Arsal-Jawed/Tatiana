@@ -1,9 +1,9 @@
 let data = "```json\n{\n  \"2021 Revenue\": \"$1,375 million\",\n  \"2021 EBITDA\": \"$186 million\",\n  \"2021 EBITDA MARGIN\": \"13.5%\",\n  \"2021 TOTAL DEBT\": \"$1,950 million\",\n  \"2021 DEBT/EBITDA\": \"10.48\",\n  \"2022 Revenue\": \"$1,480 million\",\n  \"2022 EBITDA\": \"$195 million\",\n  \"2022 EBITDA MARGIN\": \"13.2%\",\n  \"2022 TOTAL DEBT\": \"$1,900 million\",\n  \"2022 DEBT/EBITDA\": \"9.74\",\n  \"2023 Revenue\": \"$1,550 million\",\n  \"2023 EBITDA\": \"$210 million\",\n  \"2023 EBITDA MARGIN\": \"13.5%\",\n  \"2023 TOTAL DEBT\": \"$1,850 million\",\n  \"2023 DEBT/EBITDA\": \"8.81\"\n}\n```"
 let data2 = '```json\n{\n  "Fastening Systems": "Hillman Group provides a wide range of fastening solutions including screws, bolts, nuts, washers, anchors, nails, and rivets, catering to various industries and retail customers.",\n  "Hardware Solutions": "The company offers innovative hardware solutions designed for home improvement, construction, and industrial applications. This includes tools, keys, letters, numbers, signs, and accessories.",\n  "Workplace Safety and Personal Protection": "Hillman Group supplies products that ensure workplace safety and personal protection, including safety gear and protective equipment.",\n  "Merchandising Solutions": "Hillman provides merchandising solutions that help retailers enhance their product displays and improve customer experiences. This includes customized displays, packaging, and inventory management solutions."\n}\n```';
 let data3 = '```json\n{\n    "PARTNERS": {\n        "American Nurses Foundation": "Healthcare Segment"\n    },\n    "CUSTOMERS": {\n        "26,000 Retailers": "Home Improvement Retail Segment"\n    }\n}\n```\n\nThe Hillman Group has notable partners like the American Nurses Foundation in the healthcare segment and serves 26,000 retailers in the home improvement retail segment【10:0†source】【10:1†source】.';
+let data4 = "```json\n{\n    \"Rationale\": {\n        \"Info\": \"Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 50 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach.\",\n        \"Company_History\": \"Established in 1981, Infosys has grown from a capital of US$250 to a US$ 18.55 billion company with a market capitalization of US$ 76.29 billion. The company is listed on the NYSE and has more than 322k employees.\"\n    },\n    \"Issues_for_Consideration\": {\n        \"Market_Position\": \"Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.\",\n        \"Financial_Health\": \"Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.\",\n        \"Cultural_and_Operational_Integration\": \"Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.\",\n        \"Regulatory_and_Compliance_Challenges\": \"Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates.\"\n    },\n    \"Other_Issues\": {\n        \"Technological_Advancements\": \"Infosys's commitment to innovation and emerging technologies can be both an asset and a challenge. Investors need to stay abreast of technological advancements to maintain competitiveness.\",\n        \"Client_Retention\": \"Maintaining strong relationships with existing clients while expanding the client base is crucial. Potential buyers or investors should consider the strategies Infosys employs to ensure high client retention rates.\"\n    }\n}\n```"
 
-
-let response = data3
+let response = data4
 .replace(/\\"/g, '"')
 .replace(/\\n/g, '\n')
 .replace(/\n/g, '')
@@ -12,3 +12,23 @@ let response = data3
 
 response = JSON.parse(response);
 console.log('response from extractors api: ', response);
+
+
+let d = `{
+    "Rationale": {
+        "Info": "Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 56 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach.",
+        "Experience": "With a history spanning over four decades, Infosys has catalyzed significant changes that have positioned India as a global hub for software services talent."
+    },
+    "Issues_for_Consideration": {
+        "Market_Position": "Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.",
+        "Financial_Health": "Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.",
+        "Cultural_and_Operational_Integration": "Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.",
+        "Regulatory_and_Compliance_Challenges": "Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates."
+    },
+    "Other_Issues": {
+        "Technology_Adoption": "Infosys's focus on next-generation digital services requires continuous investment in technology and innovation, which could be a consideration for potential investors.",
+        "Employee_Retention": "Infosys's employee stock options program has created some of India's first salaried millionaires, but maintaining employee satisfaction and retention in a competitive market remains crucial."
+    }
+}`
+
+console.log('result: ', JSON.parse(d));

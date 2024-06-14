@@ -159,6 +159,7 @@ function Form() {
       formData.append('website', website);
       formData.append('linkedin_url', linkdin);
       formData.append('wikipedia_link', wikipedia);
+      formData.append('meeting_notes', notes);
       for (let i = 0; i < files.length; i++) {
         formData.append('files', files[i]);
       }
@@ -195,7 +196,7 @@ function Form() {
       }
 
       //  extractors api for test
-      // const res = await axios.post(apiUrl+"run-extractors", formData, {
+      // const res = await axios.post(apiUrl+"strategic_fit_overview", formData, {
       //   headers: {
       //     'Content-Type': 'multipart/form-data'
       //   }
@@ -323,7 +324,7 @@ function Form() {
           </div>
         </div>
       </div>
-      {/* <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <p className="guide">
           Are there any meeting notes we should consider ? (optional)
         </p>
@@ -337,7 +338,7 @@ function Form() {
           onChange={handleNotes}
           id="notes"
         />
-        <p
+        {/* <p
           style={{
             color: "white",
             fontSize: "2vw",
@@ -357,8 +358,8 @@ function Form() {
         <label htmlFor="fileUpload" className="file-label">
           Choose a File
         </label>
-        {notesFile && <p>Selected file: {notesFile.name}</p>}
-      </div> */}
+        {notesFile && <p>Selected file: {notesFile.name}</p>} */}
+      </div>
       <div style={{ display: "flex", flexDirection: "column", marginBottom: '1.5rem' }}>
         <p className="guide">
           Is there any specific information you would like us to consider ?

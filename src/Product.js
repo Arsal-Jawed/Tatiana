@@ -6,14 +6,15 @@ import jsPDF from "jspdf";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { apiUrl } from "./apiUrl";
-import Loading from "./Loading";
 
 function Product({ data }) {
   const [logo, setLogo] = useState(data.logo || null);
   const [productImages, setProductImages] = useState(
     data.ProductsData.map(() => null)
   );
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    marketSegmentation: true, customerPartner: true, financialOverview: true, strategicFit: true
+  });
 
   const location = useLocation();
   const recievedData = location.state || {};
@@ -64,38 +65,99 @@ function Product({ data }) {
         formData.append('website', inputs.website);
         formData.append('linkedin_url', inputs.linkedin_url);
         formData.append('wikipedia_link', inputs.wikipedia_link);
+        formData.append('meeting_notes', inputs.notes);
         for (let i = 0; i < inputs.files.length; i++) {
           formData.append('files', inputs.files[i]);
         }
         console.log('loading apis...');
-        const res = await Promise.all([axios.post(apiUrl+"market_segmentation", formData, {
+        // const res = await Promise.all([axios.post(apiUrl+"market_segmentation", formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }),
+        // axios.post(apiUrl+"customer_partner", formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }),
+        // axios.post(apiUrl+"financial_overview", formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // })
+        // ]);
+        // console.log('response from /data apis: ', res);
+        // let marketSegmentation = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
+        // marketSegmentation = JSON.parse(marketSegmentation);
+        // let customerPartner = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
+        // customerPartner = JSON.parse(customerPartner);
+        // let financialOverview = res[2].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+        // financialOverview = JSON.parse(financialOverview);
+        // setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation, customerPartner: customerPartner, financialOverview: financialOverview}));
+        // setLoading(false);
+
+        axios.post(apiUrl+"market_segmentation", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        }),
+        }).then(res => {
+          console.log('response from market_segmentation apis: ', res.data);
+          let marketSegmentation = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+          marketSegmentation = JSON.parse(marketSegmentation);
+          setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation}));
+          setLoading(prev => ({...prev, marketSegmentation: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, marketSegmentation: false}));
+        })
         axios.post(apiUrl+"customer_partner", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        }),
+        }).then(res => {
+          console.log('response from customer_partner apis: ', res.data);
+          let customerPartner = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+          customerPartner = JSON.parse(customerPartner);
+          setScrappedData(prev => ({...prev, customerPartner: customerPartner}));
+          setLoading(prev => ({...prev, customerPartner: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, customerPartner: false}));
+        })
         axios.post(apiUrl+"financial_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
+        }).then(res => {
+          console.log('response from financial_overview apis: ', res.data);
+          let financialOverview = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+          financialOverview = JSON.parse(financialOverview);
+          setScrappedData(prev => ({...prev, financialOverview: financialOverview}));
+          setLoading(prev => ({...prev, financialOverview: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, financialOverview: false}));
         })
-        ]);
-        console.log('response from /data apis: ', res);
-        let marketSegmentation = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
-        marketSegmentation = JSON.parse(marketSegmentation);
-        let customerPartner = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
-        customerPartner = JSON.parse(customerPartner);
-        let financialOverview = res[2].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        financialOverview = JSON.parse(financialOverview);
-        setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation, customerPartner: customerPartner, financialOverview: financialOverview}));
-        setLoading(false);
+
+        axios.post(apiUrl+"strategic_fit_overview", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(res => {
+          console.log('response from strategic apis: ', res, res.data);
+          let strategicFit = res.data.replace(/\\\"/g, '"').replace(/\\"/g, '"').replace(/\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+          console.log('strategic fit before: ', strategicFit);
+          strategicFit = JSON.parse(strategicFit);
+          setScrappedData(prev => ({...prev, strategicFit: strategicFit}));
+          setLoading(prev => ({...prev, strategicFit: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, strategicFit: false}));
+        })
+        
       } catch(e) {
         console.log('error in data api: ', e.message || e);
-        setLoading(false);
+        // setLoading(false);
       }
     }
     if(recievedData?.inputs) {
@@ -103,6 +165,17 @@ function Product({ data }) {
       asyncResponse();
     }
   }, [])
+
+  // To be removed
+  const StrategicFit = {
+    Rational:{Info:"Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 56 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach."},
+    "Issues for Consideration": {
+      "Market Position":"Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.",
+      "Financial Health":"Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.",
+      "Cultural and Operational Integration":"Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.",
+      "Regulatory and Compliance Challenges":"Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates."
+    }
+  }
 
   return (
     <div>
@@ -157,7 +230,7 @@ function Product({ data }) {
 
         <div className="flex flex-row">
           <div className="flex flex-col">
-            {!loading ? (<div className="boxy">
+            {!loading?.marketSegmentation ? (<div className="boxy">
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center">
                 Industrial Segment Overwiew
               </h1>
@@ -204,6 +277,44 @@ function Product({ data }) {
               </div> */}
             </div>) : <div className="loader-container"><div className="content-loader"></div></div>
             }
+
+            {/* Strategic Fit Start */}
+            {loading?.strategicFit === false ? (scrappedData?.strategicFit && (<div className="boxy">
+                <div className="flex flex-col mt-[5vh]">
+                  <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[4vh] text-center">
+                      Strategic Fit
+                  </h1>
+                  <div>
+                      {Object.entries(scrappedData?.strategicFit)?.map(([sectionTitle, sectionContent], index) => {
+                        const key = sectionTitle.replaceAll('_', ' ');
+                        return (
+                          <div key={index} className="flex flex-row w-[40vw] h-max-content border-b-[0.18vw] border-[grey] mt-4">
+                          <div className="flex flex-col justify-center bg-[#a7a7a7] bg-opacity-50">
+                          <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[11vw] justify-center items-center">
+                              {key}
+                          </p>
+                          </div>
+
+                              <div className="flex flex-col justify-start items-start text-black text-[0.9vw] p-[1.2vh] w-full h-max-content overflow-auto">
+                                  {typeof sectionContent === 'string' ? (
+                                      <p>{sectionContent}</p>
+                                  ) : (
+                                      Object.keys(sectionContent)?.map((key, idx) => {
+                                        const temp = key.replaceAll('_', ' ');
+                                        return (
+                                          <div key={idx} className="flex flex-row mb-2 w-full">
+                                              <div className="font-semibold w-[18%]">{temp}:</div>
+                                              <div className="ml-2 w-[82%]">{sectionContent[key]}</div>
+                                          </div>
+                                      )})
+                                  )}
+                              </div>
+                          </div>
+                      )})}
+                  </div>
+              </div>
+            </div>)) : <div className="loader-container"><div className="content-loader"></div></div>}
+            {/*   Strategic Fit Ends    */}
             
 
           </div>
@@ -221,17 +332,21 @@ function Product({ data }) {
                   />
                 </div>
               ))} */}
-              {scrappedData?.products && scrappedData?.products?.map((i, index) => (
-                <div key={index} className="flex flex-col">
-                  <Products
-                    item={i['NAME']}
-                    itemImage={""}
-                    discp={i['DESCRIPTION']}
-                  />
-                </div>
-              ))}
+              {scrappedData?.products && scrappedData?.products?.map((i, index) => {
+                if(index < 5) {
+                  return (<div key={index} className="flex flex-col">
+                      <Products
+                        item={i['NAME']}
+                        itemImage={""}
+                        discp={i['DESCRIPTION']}
+                      />
+                    </div>
+                  )
+                }
+                }
+              )}
             </div>
-            {!loading ? (scrappedData?.customerPartner && <div className="boxy mt-[4vh]">
+            {!loading?.customerPartner ? (scrappedData?.customerPartner && <div className="boxy mt-[4vh]">
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center">
                 Market Segment for Customer & Partnes
               </h1>
@@ -274,7 +389,7 @@ function Product({ data }) {
             </div>) : <div className="loader-container"><div className="content-loader"></div></div>}
           </div>
         </div>
-        {!loading ? (scrappedData?.financialOverview && <div className='boxy'>
+        {!loading?.financialOverview ? (scrappedData?.financialOverview && <div className='boxy mt-[4vh]'>
           <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-full text-center">
             Industrial Segmentt - Summary Financials
           </h1>
@@ -300,7 +415,7 @@ function Product({ data }) {
               </thead>
               <tbody>
                   <tr
-                    className={"bg-gray-200 px-4 py-2 text-black" || "text-black bg-opacity-20 bg-gray-400 px-4 py-2"} >
+                    className={"text-[1.1vw] bg-gray-200 px-4 py-2 text-black" || "text-black bg-opacity-20 bg-gray-400 px-4 py-2"} >
                     {Object.values(scrappedData?.financialOverview)?.map(i => <td>{i}</td>)}
                   </tr>
                 {/* {data.RevenueTable.map((row, index) => (

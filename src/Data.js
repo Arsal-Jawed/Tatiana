@@ -11,7 +11,11 @@ function Data({ data }) {
   const [logo, setLogo] = useState(data.logo || null);
   const [images, setImages] = useState(data.leaders.map(() => null));
   const [scrappedData, setScrappedData] = useState([]); 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    financialOverview: true,
+    leadershipOverview: true,
+    strategicFit: true
+  });
 
   const location = useLocation();
   const recievedData = location.state?.data || {};
@@ -76,35 +80,81 @@ function Data({ data }) {
         formData.append('website', inputs.website);
         formData.append('linkedin_url', inputs.linkedin_url);
         formData.append('wikipedia_link', inputs.wikipedia_link);
+        formData.append('meeting_notes', inputs.notes);
         for (let i = 0; i < inputs.files.length; i++) {
           formData.append('files', inputs.files[i]);
         }
-        const res = await Promise.all([axios.post(apiUrl+"financial_overview", formData, {
+        // const res = await Promise.all([axios.post(apiUrl+"financial_overview", formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // }),
+        // axios.post(apiUrl+"leadership_overview", formData, {
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data'
+        //   }
+        // })
+        // ]);
+        // console.log('response from /data apis: ', res);
+        // let financialOverview = splitExtraText(res[0].data);
+        // financialOverview = financialOverview.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+        // // let financialOverview = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+        // financialOverview = JSON.parse(financialOverview);
+        // let leadershipOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+        // leadershipOverview = JSON.parse(leadershipOverview);
+        // leadershipOverview = restructureJobPositions(leadershipOverview);
+        // setScrappedData(prev => ({...prev, financialOverview: financialOverview, leadershipOverview: leadershipOverview}));
+
+
+        axios.post(apiUrl+"financial_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        }),
+        }).then(res => {
+          console.log('response from financial apis: ', res.data);
+          let financialOverview = splitExtraText(res.data);
+          financialOverview = financialOverview.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+          financialOverview = JSON.parse(financialOverview);
+          setScrappedData(prev => ({...prev, financialOverview: financialOverview}));
+          setLoading(prev => ({...prev, financialOverview: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, financialOverview: false}));
+        })
         axios.post(apiUrl+"leadership_overview", formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
+        }).then(res => {
+          console.log('response from leadership apis: ', res.data);
+          let leadershipOverview = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+          leadershipOverview = JSON.parse(leadershipOverview);
+          leadershipOverview = restructureJobPositions(leadershipOverview);
+          setScrappedData(prev => ({...prev, leadershipOverview: leadershipOverview}));
+          setLoading(prev => ({...prev, leadershipOverview: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, leadershipOverview: false}));
         })
-        ]);
-        console.log('response from /data apis: ', res);
-        let financialOverview = splitExtraText(res[0].data);
-        financialOverview = financialOverview.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // let financialOverview = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        financialOverview = JSON.parse(financialOverview);
-        // let marketSegmentation = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // marketSegmentation = JSON.parse(marketSegmentation);
-        let leadershipOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        leadershipOverview = JSON.parse(leadershipOverview);
-        leadershipOverview = restructureJobPositions(leadershipOverview);
-        setScrappedData(prev => ({...prev, financialOverview: financialOverview, leadershipOverview: leadershipOverview}));
-        setLoading(false);
+        axios.post(apiUrl+"strategic_fit_overview", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(res => {
+          console.log('response from strategic apis: ', res, res.data);
+          let strategicFit = res.data.replace(/\\\"/g, '"').replace(/\\"/g, '"').replace(/\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+          console.log('strategic fit before: ', strategicFit);
+          strategicFit = JSON.parse(strategicFit);
+          setScrappedData(prev => ({...prev, strategicFit: strategicFit}));
+          setLoading(prev => ({...prev, strategicFit: false}));
+        }).catch(e => {
+          console.log('error in data api: ', e.message || e);
+          setLoading(prev => ({...prev, strategicFit: false}));
+        })
+
       } catch(e) {
-        console.log('error in data api: ', e.message || e);
-        setLoading(false);
+        console.log('error in data function: ', e.message || e);
+        // setLoading(false);
       }
     }
     if(recievedData?.inputs) {
@@ -145,6 +195,19 @@ function Data({ data }) {
     
     return output;
   }
+
+  // To be removed
+  const StrategicFit = {
+    Rational:{Info:"Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 56 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach."},
+    "Issues for Consideration": {
+      "Market Position":"Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.",
+      "Financial Health":"Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.",
+      "Cultural and Operational Integration":"Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.",
+      "Regulatory and Compliance Challenges":"Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates."
+    }
+  }
+
+  console.log('stategicFit response: ', scrappedData?.strategicFit);
 
   return (
     <div>
@@ -245,7 +308,7 @@ function Data({ data }) {
                 </div>
               </div>
             </div>
-            {loading === false ? (scrappedData?.leadershipOverview && (<div className="boxy">
+            {loading?.leadershipOverview === false ? (scrappedData?.leadershipOverview && (<div className="boxy">
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center mt-[20vh]">
                 Company Leaders
               </h1>
@@ -282,7 +345,7 @@ function Data({ data }) {
                 })}
                 </ul>
               </div>
-            { loading === false ? (scrappedData.financialOverview &&
+            { loading?.financialOverview === false ? (scrappedData.financialOverview &&
             <div className="boxy">
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center mt-[5vh]">
                 Fastening Systems - Segment Financial Overview
@@ -306,13 +369,21 @@ function Data({ data }) {
                       <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">
                         Q3'21A
                       </th> */}
-                      {Object.keys(scrappedData?.financialOverview)?.map(i => <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)}
+                      {Object.keys(scrappedData?.financialOverview)?.map(i => {
+                        if(scrappedData?.financialOverview[i]?.toLowerCase() !== 'not specified' && scrappedData?.financialOverview[i]?.toLowerCase() !== 'not available' && scrappedData?.financialOverview[i]?.toLowerCase() !== 'n/a') {
+                          return (<th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)
+                        }
+                        })}
                     </tr>
                   </thead>
                   <tbody>
                     <tr
-                      className={"bg-gray-200 px-4 py-2 text-black" || "text-black bg-opacity-20 bg-gray-400 px-4 py-2"} >
-                      {Object.values(scrappedData?.financialOverview)?.map(i => <td>{i}</td>)}
+                      className={"text-[1.1vw] bg-gray-200 px-4 py-2 text-black" || "text-black bg-opacity-20 bg-gray-400 px-4 py-2"} >
+                      {Object.values(scrappedData?.financialOverview)?.map(i => {
+                        if(i.toLowerCase() !== 'not specified' && i.toLowerCase() !== 'not available' && i.toLowerCase() !== 'n/a') {
+                          return (<td>{i}</td>)
+                        }
+                        })}
                     </tr>
                     {/* {data.tableData.map((row, index) => (
                       // <tr
@@ -335,6 +406,43 @@ function Data({ data }) {
               </div>
             </div>) : 
             <div className="loader-container"><div className="content-loader"></div></div>}
+              {/* Strategic Fit Startsdf */}
+            {loading?.strategicFit === false ? (scrappedData?.strategicFit && (<div className="boxy">
+                <div className="flex flex-col mt-[5vh]">
+                  <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[4vh] text-center">
+                      Strategic Fit
+                  </h1>
+                  <div>
+                      {Object.entries(scrappedData?.strategicFit)?.map(([sectionTitle, sectionContent], index) => {
+                        const key = sectionTitle.replaceAll('_', ' ');
+                        return (
+                          <div key={index} className="flex flex-row w-[40vw] h-max-content border-b-[0.18vw] border-[grey] mt-4">
+                          <div className="flex flex-col justify-center bg-[#a7a7a7] bg-opacity-50">
+                          <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[11vw] justify-center items-center">
+                              {key}
+                          </p>
+                          </div>
+
+                              <div className="flex flex-col justify-start items-start text-black text-[0.9vw] p-[1.2vh] w-full h-max-content overflow-auto">
+                                  {typeof sectionContent === 'string' ? (
+                                      <p>{sectionContent}</p>
+                                  ) : (
+                                      Object.keys(sectionContent)?.map((key, idx) => {
+                                        const temp = key.replaceAll('_', ' ');
+                                        return (
+                                          <div key={idx} className="flex flex-row mb-2 w-full">
+                                              <div className="font-semibold w-[18%]">{temp}:</div>
+                                              <div className="ml-2 w-[82%]">{sectionContent[key]}</div>
+                                          </div>
+                                      )})
+                                  )}
+                              </div>
+                          </div>
+                      )})}
+                  </div>
+              </div>
+            </div>)) : <div className="loader-container"><div className="content-loader"></div></div>}
+            {/*   Strategic Fit Ends    */}
           </div>
         </div>
       </div>
