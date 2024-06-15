@@ -70,33 +70,6 @@ function Data({ data }) {
   }, [recievedData]);
 
   useEffect(() => {
-    // const asyncResponse = async () => {
-    //   try {
-        
-        // const res = await Promise.all([axios.post(apiUrl+"financial_overview", formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }),
-        // axios.post(apiUrl+"leadership_overview", formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // })
-        // ]);
-        // console.log('response from /data apis: ', res);
-        // let financialOverview = splitExtraText(res[0].data);
-        // financialOverview = financialOverview.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // // let financialOverview = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // financialOverview = JSON.parse(financialOverview);
-        // let leadershipOverview = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // leadershipOverview = JSON.parse(leadershipOverview);
-        // leadershipOverview = restructureJobPositions(leadershipOverview);
-        // setScrappedData(prev => ({...prev, financialOverview: financialOverview, leadershipOverview: leadershipOverview}));
-    //   } catch(e) {
-    //     console.log('error in data function: ', e.message || e);
-    //   }
-    // }
     if(recievedData?.inputs) {
       console.log('inputs: ', recievedData?.inputs);
       console.log('loading apis...');
@@ -160,15 +133,10 @@ function Data({ data }) {
   }, [])
 
   function splitExtraText(inputString) {
-    // Find the last occurrence of the triple backticks
     const lastTripleBackticksIndex = inputString.lastIndexOf("```");
-    
-    // If the triple backticks are not found, return the original string
     if (lastTripleBackticksIndex === -1) {
         return inputString;
     }
-    
-    // Return the substring from the start of the string up to the triple backticks
     return inputString.substring(0, lastTripleBackticksIndex + 3).trim();
   }
 
@@ -191,19 +159,6 @@ function Data({ data }) {
     
     return output;
   }
-
-  // To be removed
-  const StrategicFit = {
-    Rational:{Info:"Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 56 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach."},
-    "Issues for Consideration": {
-      "Market Position":"Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.",
-      "Financial Health":"Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.",
-      "Cultural and Operational Integration":"Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.",
-      "Regulatory and Compliance Challenges":"Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates."
-    }
-  }
-
-  // console.log('stategicFit response: ', scrappedData?.strategicFit);
 
   return (
     <div>
@@ -237,17 +192,6 @@ function Data({ data }) {
                 </span>
               </label>
             )}
-          {/* {scrappedData?.profileImg ? (
-            <img src={scrappedData?.profileImg} alt="logo" className="w-[20vw] h-[18vh] ml-[1vw]" />
-          ) : (
-            <div
-              className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
-            >
-              <label htmlFor="upload-button-logo" className="text-gray-500 text-center text-[1vw]">
-                No Image
-              </label>
-            </div>
-          )} */}
           <input
             type="file"
             id="upload-button-logo"
@@ -331,8 +275,6 @@ function Data({ data }) {
                   {scrappedData?.services && scrappedData?.services?.map((i, index) => {
                     // const firstKey = Object.keys(scrappedData?.services[i])[0];
                     // const firstValue = scrappedData?.services[i][firstKey];
-
-                    // console.log('item: ', item);
                     return (<li key={index} className="mt-[2vh]">
                       <span className="text-bold font-semibold">{`${i['NAME']}: `}</span>
                       {i['DESCRIPTION']}
@@ -349,21 +291,6 @@ function Data({ data }) {
                 <table className="table-auto w-full">
                   <thead>
                     <tr className="bg-[#9c9c9c] bg-opacity-50">
-                      {/* <th className="px-4 py-2 text-black text-[0.8vw] w-[20vw] border-l border-r border-gray-300">
-                        $ in millions
-                      </th>
-                      <th className="px-4 py-2 text-black text-[1.1vw] border-l border-rr border-gray-300">
-                        FY'22A
-                      </th>
-                      <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">
-                        Q1'21A
-                      </th>
-                      <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">
-                        Q2'21A
-                      </th>
-                      <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">
-                        Q3'21A
-                      </th> */}
                       {Object.keys(scrappedData?.financialOverview)?.map(i => {
                         if(scrappedData?.financialOverview[i]?.toLowerCase().includes('not specified') === false && scrappedData?.financialOverview[i]?.toLowerCase().includes('not available') === false && scrappedData?.financialOverview[i]?.toLowerCase() !== 'n/a') {
                           return (<th className="px-4 py-2 text-left text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)
@@ -380,63 +307,12 @@ function Data({ data }) {
                         }
                         })}
                     </tr>
-                    {/* {data.tableData.map((row, index) => (
-                      // <tr
-                      //   key={index}
-                      //   className={
-                      //     index % 2 === 0
-                      //       ? "bg-gray-200 px-4 py-2 text-black"
-                      //       : "text-black bg-opacity-20 bg-gray-400 px-4 py-2"
-                      //   }
-                      // >
-                      //   <td>{row.millions}</td>
-                      //   <td>{row.fy}</td>
-                      //   <td>{row.q1}</td>
-                      //   <td>{row.q2}</td>
-                      //   <td>{row.q3}</td>
-                      // </tr>
-                    ))} */}
                   </tbody>
                 </table>
               </div>
             </div>) : 
             <div className="loader-container"><div className="content-loader"></div></div>}
               {/* Strategic Fit Start */}
-            {/* {loading?.strategicFit === false ? (scrappedData?.strategicFit && (<div className="boxy">
-                <div className="flex flex-col mt-[5vh]">
-                  <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[4vh] text-center">
-                      Strategic Fit
-                  </h1>
-                  <div>
-                      {Object.entries(scrappedData?.strategicFit)?.map(([sectionTitle, sectionContent], index) => {
-                        const key = sectionTitle.replaceAll('_', ' ');
-                        return (
-                          <div key={index} className="flex flex-row w-[40vw] h-max-content border-b-[0.18vw] border-[grey] mt-4">
-                          <div className="flex flex-col justify-center bg-[#a7a7a7] bg-opacity-50">
-                          <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[11vw] justify-center items-center">
-                              {key}
-                          </p>
-                          </div>
-
-                              <div className="flex flex-col justify-start items-start text-black text-[0.9vw] p-[1.2vh] w-full h-max-content overflow-auto">
-                                  {typeof sectionContent === 'string' ? (
-                                      <p>{sectionContent}</p>
-                                  ) : (
-                                      Object.keys(sectionContent)?.map((key, idx) => {
-                                        const temp = key.replaceAll('_', ' ');
-                                        return (
-                                          <div key={idx} className="flex flex-row mb-2 w-full">
-                                              <div className="font-semibold w-[18%]">{temp}:</div>
-                                              <div className="ml-2 w-[82%]">{sectionContent[key]}</div>
-                                          </div>
-                                      )})
-                                  )}
-                              </div>
-                          </div>
-                      )})}
-                  </div>
-              </div>
-            </div>)) : <div className="loader-container"><div className="content-loader"></div></div>} */}
             {loading?.strategicFit === false ? (scrappedData?.strategicFit && (<div className="boxy">
                 <div className="flex flex-col mt-[5vh]">
                   <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[3vh] text-center">

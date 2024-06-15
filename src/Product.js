@@ -46,39 +46,6 @@ function Product({ data }) {
   }, [recievedData]);
 
   useEffect(() => {
-    // const asyncResponse = async () => {
-    //   try {
-        // const res = await Promise.all([axios.post(apiUrl+"market_segmentation", formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }),
-        // axios.post(apiUrl+"customer_partner", formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // }),
-        // axios.post(apiUrl+"financial_overview", formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // })
-        // ]);
-        // console.log('response from /data apis: ', res);
-        // let marketSegmentation = res[0].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
-        // marketSegmentation = JSON.parse(marketSegmentation);
-        // let customerPartner = res[1].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/^```json/, '').replace(/```$/, '');
-        // customerPartner = JSON.parse(customerPartner);
-        // let financialOverview = res[2].data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // financialOverview = JSON.parse(financialOverview);
-        // setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation, customerPartner: customerPartner, financialOverview: financialOverview}));
-        // setLoading(false);
-        
-    // } catch(e) {
-    //   console.log('error in data api: ', e.message || e);
-    //   // setLoading(false);
-    //   }
-    //   }
     if(recievedData?.inputs) {
       console.log('inputs: ', recievedData?.inputs);
       const inputs = recievedData?.inputs;
@@ -144,7 +111,6 @@ function Product({ data }) {
       }).then(res => {
         console.log('response from strategic apis: ', res, res.data);
         let strategicFit = res.data.replace(/\\\"/g, '"').replace(/\\"/g, '"').replace(/\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-        // console.log('strategic fit before: ', strategicFit);
         strategicFit = JSON.parse(strategicFit);
         setScrappedData(prev => ({...prev, strategicFit: strategicFit}));
         setLoading(prev => ({...prev, strategicFit: false}));
@@ -154,17 +120,6 @@ function Product({ data }) {
       })
     }
   }, [])
-
-  // To be removed
-  const StrategicFit = {
-    Rational:{Info:"Infosys is a global leader in next-generation digital services and consulting. The company has a strong presence in over 56 countries and has been instrumental in driving digital transformation for its clients across various industries. With over 40 years of experience, Infosys has established itself as a trusted partner for many global enterprises, making it an attractive target for potential buyers or investors looking to enhance their digital capabilities and global reach."},
-    "Issues for Consideration": {
-      "Market Position":"Infosys is the second-largest Indian IT company by revenue, following Tata Consultancy Services. This strong market position makes it a valuable asset, but also means any buyer or investor would need to navigate competitive pressures within the IT services sector.",
-      "Financial Health":"Infosys has demonstrated strong financial performance with revenues reaching US$ 18.55 billion and a market capitalization of US$ 76.29 billion. However, potential investors should consider the company's ability to sustain this growth amidst global economic fluctuations.",
-      "Cultural and Operational Integration":"Given Infosys's extensive global operations and diverse workforce, any potential buyer or investor would need to carefully plan for cultural and operational integration to ensure a smooth transition and continued success.",
-      "Regulatory and Compliance Challenges":"Operating in multiple jurisdictions exposes Infosys to various regulatory and compliance challenges. Potential investors need to be aware of the legal and regulatory landscapes in the countries where Infosys operates."
-    }
-  }
 
   return (
     <div>
@@ -201,13 +156,6 @@ function Product({ data }) {
                 Upload Image
               </span>
             </label>
-            // <div
-            //   className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
-            // >
-            //   <span className="text-gray-500 text-center text-[1vw]">
-            //     No Image
-            //   </span>
-            // </div>
           )}
           <input
             type="file"
@@ -235,7 +183,6 @@ function Product({ data }) {
                   </div>
                 )
               })}
-
               {/* <div className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
                 <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center">
                   Description
@@ -312,15 +259,6 @@ function Product({ data }) {
               <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] text-center">
                 Products
               </h1>
-              {/* {scrappedData?.products && Object.keys(scrappedData?.products)?.map((key, index) => (
-                <div key={index} className="flex flex-col">
-                  <Products
-                    item={key}
-                    itemImage={""}
-                    discp={scrappedData?.products[key]}
-                  />
-                </div>
-              ))} */}
               {scrappedData?.products && scrappedData?.products?.map((i, index) => {
                 if(index < 5) {
                   return (<div key={index} className="flex flex-col">
@@ -393,18 +331,6 @@ function Product({ data }) {
                     return (<th className="px-4 py-2 text-left text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)
                   }
                 })}
-                  {/* <th className="px-4 py-2 text-[0.8vw] border-l border-r border-gray-300">
-                    $ in millions
-                  </th>
-                  <th className="px-4 py-2 text-[0.8vw] border-l border-r border-gray-300">
-                    Q1'21A
-                  </th>
-                  <th className="px-4 py-2 text-[0.8vw] border-l border-r border-gray-300">
-                    Q2'21A
-                  </th>
-                  <th className="px-4 py-2 text-[0.8vw] border-l border-r border-gray-300">
-                    Q3'21A
-                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -416,21 +342,6 @@ function Product({ data }) {
                         }
                     })}
                   </tr>
-                {/* {data.RevenueTable.map((row, index) => (
-                  <tr
-                    key={index}
-                    className={
-                      index % 2 === 0
-                        ? "bg-gray-200 px-4 py-2 text-black"
-                        : "text-black bg-gray-400 px-4 py-2"
-                    }
-                  >
-                    <td>{row.millions}</td>
-                    <td>{row.y1}</td>
-                    <td>{row.y2}</td>
-                    <td>{row.y3}</td>
-                  </tr>
-                ))} */}
               </tbody>
             </table>
           </div>
