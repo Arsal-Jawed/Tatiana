@@ -270,7 +270,7 @@ function Product({ data }) {
             {/* Strategic Fit Start */}
             {loading?.strategicFit === false ? (scrappedData?.strategicFit && (<div className="boxy">
                 <div className="flex flex-col mt-[5vh]">
-                  <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[4vh] text-center">
+                  <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-[40vw] mb-[3vh] text-center">
                       Strategic Fit
                   </h1>
                   <div>

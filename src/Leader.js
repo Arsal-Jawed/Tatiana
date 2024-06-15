@@ -1,21 +1,30 @@
+import { useState } from 'react';
 import './leader.css';
 
 function Leader(props) {
+    const [productImages, setProductImages] = useState('');
+    const handleImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+        // const newImages = [...productImages];
+        // newImages[index] = URL.createObjectURL(event.target.files[0]);
+        setProductImages(URL.createObjectURL(event.target.files[0]));
+        }
+    }
     return (
         <div className='flex flex-row mt-[5vh]'>
             <div className='flex flex-col justify-center items-center'>
                 <div className='relative w-[8vw] h-[16vh] rounded-[4vw] overflow-hidden'>
-                    {props?.image ? (
-                        <img src={props?.image} alt="leader pic" className='w-full h-full object-cover rounded-[4vw] transform hover:scale-125 transition duration-300' />
+                    {productImages ? (
+                        <img src={productImages} alt="leader pic" className='w-full h-full object-cover rounded-[4vw] transform hover:scale-125 transition duration-300' />
                     ) : (
-                        // <label htmlFor={`upload-button-${props.name}`} className='w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]'>
-                        //     <span className='text-gray-500 ml-[2vw] text-[1vw]'>Upload Image</span>
-                        // </label>
-                        <div className='w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]'>
-                            <span className='text-gray-500 text-center'>No Image</span>
-                        </div>
+                        <label htmlFor={`upload-button-${props.name}`} className='w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]'>
+                            <span className='text-gray-500 ml-[2vw] text-[1vw]'>Upload Image</span>
+                        </label>
+                        // <div className='w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]'>
+                        //     <span className='text-gray-500 text-center'>No Image</span>
+                        // </div>
                     )}
-                    {/* <input type="file" id={`upload-button-${props.name}`} style={{ display: 'none' }} onChange={props.onImageChange} /> */}
+                    <input type="file" id={`upload-button-${props.name}`} style={{ display: 'none' }} onChange={handleImageChange} />
                 </div>
                 <p className='text-[#060647] text-[1.2vw] mt-[2vh] font-semibold'>{props.name}</p>
                 <p className='text-[1vw] text-black'><i>{props.position}</i></p>
