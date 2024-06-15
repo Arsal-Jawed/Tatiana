@@ -9,9 +9,6 @@ import { apiUrl } from "./apiUrl";
 
 function Product({ data }) {
   const [logo, setLogo] = useState(data.logo || null);
-  const [productImages, setProductImages] = useState(
-    data.ProductsData.map(() => null)
-  );
   const [loading, setLoading] = useState({
     marketSegmentation: true, customerPartner: true, financialOverview: true, strategicFit: true
   });
@@ -23,13 +20,6 @@ function Product({ data }) {
   });
   console.log('scrappedData: ', scrappedData);
 
-  const handleImageChange = (index, event) => {
-    if (event.target.files && event.target.files[0]) {
-      const newImages = [...productImages];
-      newImages[index] = URL.createObjectURL(event.target.files[0]);
-      setProductImages(newImages);
-    }
-  };
   const handleLogoChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setLogo(URL.createObjectURL(event.target.files[0]));
@@ -56,20 +46,8 @@ function Product({ data }) {
   }, [recievedData]);
 
   useEffect(() => {
-    const asyncResponse = async () => {
-      try {
-        const inputs = recievedData?.inputs;
-        const formData = new FormData();
-        formData.append('context', inputs.context);
-        formData.append('company_name', inputs.company_name);
-        formData.append('website', inputs.website);
-        formData.append('linkedin_url', inputs.linkedin_url);
-        formData.append('wikipedia_link', inputs.wikipedia_link);
-        formData.append('meeting_notes', inputs.notes);
-        for (let i = 0; i < inputs.files.length; i++) {
-          formData.append('files', inputs.files[i]);
-        }
-        console.log('loading apis...');
+    // const asyncResponse = async () => {
+    //   try {
         // const res = await Promise.all([axios.post(apiUrl+"market_segmentation", formData, {
         //   headers: {
         //     'Content-Type': 'multipart/form-data'
@@ -95,74 +73,85 @@ function Product({ data }) {
         // financialOverview = JSON.parse(financialOverview);
         // setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation, customerPartner: customerPartner, financialOverview: financialOverview}));
         // setLoading(false);
-
-        axios.post(apiUrl+"market_segmentation", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(res => {
-          console.log('response from market_segmentation apis: ', res.data);
-          let marketSegmentation = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
-          marketSegmentation = JSON.parse(marketSegmentation);
-          setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation}));
-          setLoading(prev => ({...prev, marketSegmentation: false}));
-        }).catch(e => {
-          console.log('error in data api: ', e.message || e);
-          setLoading(prev => ({...prev, marketSegmentation: false}));
-        })
-        axios.post(apiUrl+"customer_partner", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(res => {
-          console.log('response from customer_partner apis: ', res.data);
-          let customerPartner = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
-          customerPartner = JSON.parse(customerPartner);
-          setScrappedData(prev => ({...prev, customerPartner: customerPartner}));
-          setLoading(prev => ({...prev, customerPartner: false}));
-        }).catch(e => {
-          console.log('error in data api: ', e.message || e);
-          setLoading(prev => ({...prev, customerPartner: false}));
-        })
-        axios.post(apiUrl+"financial_overview", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(res => {
-          console.log('response from financial_overview apis: ', res.data);
-          let financialOverview = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
-          financialOverview = JSON.parse(financialOverview);
-          setScrappedData(prev => ({...prev, financialOverview: financialOverview}));
-          setLoading(prev => ({...prev, financialOverview: false}));
-        }).catch(e => {
-          console.log('error in data api: ', e.message || e);
-          setLoading(prev => ({...prev, financialOverview: false}));
-        })
-
-        axios.post(apiUrl+"strategic_fit_overview", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(res => {
-          console.log('response from strategic apis: ', res, res.data);
-          let strategicFit = res.data.replace(/\\\"/g, '"').replace(/\\"/g, '"').replace(/\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
-          console.log('strategic fit before: ', strategicFit);
-          strategicFit = JSON.parse(strategicFit);
-          setScrappedData(prev => ({...prev, strategicFit: strategicFit}));
-          setLoading(prev => ({...prev, strategicFit: false}));
-        }).catch(e => {
-          console.log('error in data api: ', e.message || e);
-          setLoading(prev => ({...prev, strategicFit: false}));
-        })
         
-      } catch(e) {
-        console.log('error in data api: ', e.message || e);
-        // setLoading(false);
-      }
-    }
+    // } catch(e) {
+    //   console.log('error in data api: ', e.message || e);
+    //   // setLoading(false);
+    //   }
+    //   }
     if(recievedData?.inputs) {
       console.log('inputs: ', recievedData?.inputs);
-      asyncResponse();
+      const inputs = recievedData?.inputs;
+      const formData = new FormData();
+      formData.append('context', inputs.context);
+      formData.append('company_name', inputs.company_name);
+      formData.append('website', inputs.website);
+      formData.append('linkedin_url', inputs.linkedin_url);
+      formData.append('wikipedia_link', inputs.wikipedia_link);
+      formData.append('meeting_notes', inputs.notes);
+      for (let i = 0; i < inputs.files.length; i++) {
+        formData.append('files', inputs.files[i]);
+      }
+      console.log('loading apis...');
+
+      axios.post(apiUrl+"market_segmentation", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        console.log('response from market_segmentation apis: ', res.data);
+        let marketSegmentation = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+        marketSegmentation = JSON.parse(marketSegmentation);
+        setScrappedData(prev => ({...prev, marketSegmentation: marketSegmentation}));
+        setLoading(prev => ({...prev, marketSegmentation: false}));
+      }).catch(e => {
+        console.log('error in data api: ', e.message || e);
+        setLoading(prev => ({...prev, marketSegmentation: false}));
+      })
+      axios.post(apiUrl+"customer_partner", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        console.log('response from customer_partner apis: ', res.data);
+        let customerPartner = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+        customerPartner = JSON.parse(customerPartner);
+        setScrappedData(prev => ({...prev, customerPartner: customerPartner}));
+        setLoading(prev => ({...prev, customerPartner: false}));
+      }).catch(e => {
+        console.log('error in data api: ', e.message || e);
+        setLoading(prev => ({...prev, customerPartner: false}));
+      })
+      axios.post(apiUrl+"financial_overview", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        console.log('response from financial_overview apis: ', res.data);
+        let financialOverview = res.data.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\n/g, '').replace(/```json/, '').replace(/```$/, '');
+        financialOverview = JSON.parse(financialOverview);
+        setScrappedData(prev => ({...prev, financialOverview: financialOverview}));
+        setLoading(prev => ({...prev, financialOverview: false}));
+      }).catch(e => {
+        console.log('error in data api: ', e.message || e);
+        setLoading(prev => ({...prev, financialOverview: false}));
+      })
+
+      axios.post(apiUrl+"strategic_fit_overview", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        console.log('response from strategic apis: ', res, res.data);
+        let strategicFit = res.data.replace(/\\\"/g, '"').replace(/\\"/g, '"').replace(/\"/g, '"').replace(/\\n/g, '\n').replace(/^```json\n/, '').replace(/```$/, '');
+        // console.log('strategic fit before: ', strategicFit);
+        strategicFit = JSON.parse(strategicFit);
+        setScrappedData(prev => ({...prev, strategicFit: strategicFit}));
+        setLoading(prev => ({...prev, strategicFit: false}));
+      }).catch(e => {
+        console.log('error in data api: ', e.message || e);
+        setLoading(prev => ({...prev, strategicFit: false}));
+      })
     }
   }, [])
 
@@ -204,21 +193,21 @@ function Product({ data }) {
               className="w-[20vw] h-[18vh] ml-[1vw]"
             ></img>
           ) : (
-            // <label
-            //   htmlFor={`upload-button-logo`}
-            //   className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
-            // >
-            //   <span className="text-gray-500 ml-[2vw] text-[1vw]">
-            //     Upload Image
-            //   </span>
-            // </label>
-            <div
+            <label
+              htmlFor={`upload-button-logo`}
               className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
             >
-              <span className="text-gray-500 text-center text-[1vw]">
-                No Image
+              <span className="text-gray-500 ml-[2vw] text-[1vw]">
+                Upload Image
               </span>
-            </div>
+            </label>
+            // <div
+            //   className="w-[20vw] h-[18vh] bg-gray-200 flex items-center justify-center cursor-pointer rounded-[4vw]"
+            // >
+            //   <span className="text-gray-500 text-center text-[1vw]">
+            //     No Image
+            //   </span>
+            // </div>
           )}
           <input
             type="file"
@@ -237,10 +226,10 @@ function Product({ data }) {
               {scrappedData?.marketSegmentation && Object.keys(scrappedData?.marketSegmentation)?.map(key => {
                 return (
                   <div className="flex flex-row w-[36vw] h-[max-content] border-b-[0.18vw] border-[#acacac]">
-                    <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw]  justify-center items-center">
+                    <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[12vw]  items-center">
                       {key}
                     </p>
-                    <p className="flex justify-center items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]">
+                    <p className="flex items-center text-black text-[0.9vw]  p-[1.2vh] w-[30vw]">
                       {scrappedData?.marketSegmentation[key]}
                     </p>
                   </div>
@@ -290,12 +279,12 @@ function Product({ data }) {
                         return (
                           <div key={index} className="flex flex-row w-[40vw] h-max-content border-b-[0.18vw] border-[grey] mt-4">
                           <div className="flex flex-col justify-center bg-[#a7a7a7] bg-opacity-50">
-                          <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[11vw] justify-center items-center">
+                          <p className="flex text-black text-[1vw] font-semibold p-[1vh] w-[9vw] justify-center items-center">
                               {key}
                           </p>
                           </div>
 
-                              <div className="flex flex-col justify-start items-start text-black text-[0.9vw] p-[1.2vh] w-full h-max-content overflow-auto">
+                              <div className="flex flex-col justify-start items-start text-black text-[0.9vw] p-[1.2vh] w-full ml-[1vw] h-max-content overflow-auto">
                                   {typeof sectionContent === 'string' ? (
                                       <p>{sectionContent}</p>
                                   ) : (
@@ -303,8 +292,8 @@ function Product({ data }) {
                                         const temp = key.replaceAll('_', ' ');
                                         return (
                                           <div key={idx} className="flex flex-row mb-2 w-full">
-                                              <div className="font-semibold w-[18%]">{temp}:</div>
-                                              <div className="ml-2 w-[82%]">{sectionContent[key]}</div>
+                                              <div className="font-semibold text-[0.85vw] w-[18%]">{temp}:</div>
+                                              <div className="ml-[4vw] w-[82%]">{sectionContent[key]}</div>
                                           </div>
                                       )})
                                   )}
@@ -339,6 +328,7 @@ function Product({ data }) {
                         item={i['NAME']}
                         itemImage={""}
                         discp={i['DESCRIPTION']}
+                        // onImageChange={(event) => handleImageChange(index, event)}
                       />
                     </div>
                   )
@@ -372,12 +362,12 @@ function Product({ data }) {
                     <p className="flex text-black text-[1vw] font-semibold mt-[8%] p-[1vh] w-[12vw] justify-center items-center">
                       {key}
                     </p>
-                    <div className="flex flex-col justify-center items-center text-black text-[0.9vw] p-[1.2vh] w-[30vw]">
+                    <div className="flex flex-col justify-center items-left text-black text-[0.9vw] gap-[1.2vh] p-[1.2vh] w-[30vw]">
                       {scrappedData?.customerPartner[key]?.map((item, idx) => {
                         // console.log('data inside: ', item, scrappedData?.customerPartner[key]);
                         return (<div key={idx}>
                           {Object.keys(item).map((subKey, subIndex) => (
-                            <span key={subIndex}>{`${subKey}: ${item[subKey]}`}</span>
+                            <span className="inline-block" key={subIndex}><span className="font-semibold">{`${subKey}: `}</span>{`${item[subKey]}`}</span>
                           ))}
                         </div>)
               })}
@@ -389,7 +379,7 @@ function Product({ data }) {
             </div>) : <div className="loader-container"><div className="content-loader"></div></div>}
           </div>
         </div>
-        {!loading?.financialOverview ? (scrappedData?.financialOverview && <div className='boxy mt-[4vh]'>
+        {loading?.financialOverview === false ? (scrappedData?.financialOverview && <div className='boxy mt-[4vh]'>
           <h1 className="text-white text-[1.4vw] font-semibold bg-[#060647] p-[0.8vh] w-full text-center">
             Industrial Segmentt - Summary Financials
           </h1>
@@ -398,7 +388,11 @@ function Product({ data }) {
             <table className="table-auto w-full">
               <thead>
                 <tr className="bg-[#cccc] text-white">
-                {Object.keys(scrappedData?.financialOverview)?.map(i => <th className="px-4 py-2 text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)}
+                {Object.keys(scrappedData?.financialOverview)?.map(i => {
+                  if(scrappedData?.financialOverview[i]?.toLowerCase().includes('not specified') === false && scrappedData?.financialOverview[i]?.toLowerCase().includes('not available') === false && scrappedData?.financialOverview[i]?.toLowerCase() !== 'n/a') {
+                    return (<th className="px-4 py-2 text-left text-black text-[1.1vw] border-l border-r border-gray-300">{i}</th>)
+                  }
+                })}
                   {/* <th className="px-4 py-2 text-[0.8vw] border-l border-r border-gray-300">
                     $ in millions
                   </th>
@@ -416,7 +410,11 @@ function Product({ data }) {
               <tbody>
                   <tr
                     className={"text-[1.1vw] bg-gray-200 px-4 py-2 text-black" || "text-black bg-opacity-20 bg-gray-400 px-4 py-2"} >
-                    {Object.values(scrappedData?.financialOverview)?.map(i => <td>{i}</td>)}
+                    {Object.values(scrappedData?.financialOverview)?.map(i => {
+                        if(i.toLowerCase().includes('not specified') === false && i.toLowerCase().includes('not available') === false && i.toLowerCase() !== 'n/a') {
+                          return (<td>{i}</td>)
+                        }
+                    })}
                   </tr>
                 {/* {data.RevenueTable.map((row, index) => (
                   <tr
